@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUSI4652: Digital Learning Experience Design</title>
+    
+    <!-- Fonts: Roboto (Sans-serif) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Icons: FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- 1. VARIABLES & RESET (UoN Palette) --- */
+        :root {
+            --uon-blue: #102647; /* Nottingham Blue */
+            --uon-sky: #00677F;  /* Secondary Teal/Blue */
+            --light-bg: #f4f4f4;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #555555;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --card-hover: 0 10px 15px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- 2. HEADER SECTION --- */
+        header {
+            background-color: var(--white);
+            border-bottom: 5px solid var(--uon-blue);
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: var(--uon-blue);
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            color: var(--uon-blue);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: var(--uon-sky);
+            font-weight: 400;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-text {
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        /* Pedagogical Principles Section */
+        .pedagogy-section {
+            background-color: #eef5f7;
+            padding: 1.5rem;
+            border-left: 4px solid var(--uon-blue);
+            margin-bottom: 2rem;
+            border-radius: 4px;
+        }
+
+        .pedagogy-title {
+            color: var(--uon-blue);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .pedagogy-item {
+            margin-bottom: 1rem;
+        }
+        .pedagogy-item strong { color: var(--uon-sky); }
+
+        /* Learning Outcomes */
+        .lo-box {
+            background-color: var(--white);
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .lo-box h3 {
+            font-size: 1.1rem;
+            color: var(--uon-blue);
+            margin-bottom: 0.8rem;
+        }
+
+        .lo-box ul {
+            list-style-position: inside;
+            padding-left: 0.5rem;
+        }
+        
+        .lo-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- 3. TIMELINE STRUCTURE --- */
+        .timeline-section {
+            padding: 4rem 0;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* The Spine */
+        .timeline-section::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--uon-blue);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            z-index: 0;
+        }
+
+        .phase-header {
+            background-color: var(--uon-blue);
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
+            width: fit-content;
+            margin: 3rem auto;
+            box-shadow: var(--card-shadow);
+            border: 2px solid var(--white);
+        }
+        .subphase-header {
+            background-color: var(--light-bg);
+            color: var(text-light);
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+            width: fit-content;
+            margin: 3rem auto;
+            box-shadow: var(--card-shadow);
+            border: 2px solid var(--white);
+        }
+        /* Card Wrapper */
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            margin-bottom: 2rem;
+            box-sizing: border-box;
+        }
+
+        /* Left Side */
+        .timeline-item.left {
+            left: 0;
+            text-align: right; /* Text aligns towards spine */
+        }
+        
+        .timeline-item.left .card {
+            text-align: left; /* Reset text inside card */
+        }
+
+        /* Right Side */
+        .timeline-item.right {
+            left: 50%;
+            text-align: left;
+        }
+
+        /* The Connector Dot */
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: var(--white);
+            border: 4px solid var(--uon-sky);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item.right::after {
+            left: -10px;
+        }
+
+        /* --- 4. ACTIVITY CARD STYLING --- */
+        .card {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 6px solid var(--uon-blue);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover);
+            border-left-color: var(--uon-sky);
+        }
+
+        .card:focus {
+            outline: 3px solid var(--uon-sky);
+        }
+
+        /* 1. Top: Title & Duration */
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.8rem;
+        }
+
+        .activity-title {
+            font-weight: 700;
+            color: var(--uon-blue);
+            font-size: 1.1rem;
+            margin-right: 10px;
+        }
+
+        .duration-badge {
+            font-size: 0.8rem;
+            background: #eee;
+            padding: 4px 10px;
+            border-radius: 12px;
+            color: #555;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        /* 2. Middle: Actor */
+        .card-middle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .actor-icon {
+            font-size: 1.6rem;
+            color: var(--uon-sky);
+            margin-right: 15px;
+            width: 35px;
+            text-align: center;
+        }
+
+        .actor-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        /* 3. Bottom: Tools & 4. Tags */
+        .card-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tools-row {
+            display: flex;
+            gap: 15px;
+            color: var(--text-light);
+            font-size: 1.3rem;
+        }
+
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 15px;
+            background-color: var(--uon-blue);
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* Tag Colors (Laurillard Types) */
+        .tag.acquisition { background-color: #2c3e50; } /* Dark Blue/Grey */
+        .tag.practice { background-color: #27ae60; }    /* Green */
+        .tag.enquiry { background-color: #8e44ad; }     /* Purple */
+        .tag.discussion { background-color: #d35400; }  /* Orange */
+        .tag.collaboration { background-color: #16a085; } /* Teal */
+        .tag.production { background-color: #c0392b; }  /* Red */
+
+        /* --- 5. ANALYTICS SECTION --- */
+        .analytics-section {
+            background-color: var(--white);
+            padding: 3rem 1rem;
+            border-top: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .chart-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            position: relative;
+            height: 400px; /* specific height for Chart.js */
+        }
+
+        /* --- 6. REFERENCES --- */
+        .references-section {
+            background-color: var(--uon-blue);
+            color: var(--white);
+            padding: 2rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .references-section h3 {
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* --- 7. MODAL STYLING --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            width: 100%;
+            max-width: 750px;
+            border-radius: 8px;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 20px 25px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 1.8rem;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover { color: var(--uon-blue); }
+
+        .modal-header {
+            border-bottom: 2px solid var(--uon-sky);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--uon-blue);
+            font-size: 1.8rem;
+        }
+        
+        .modal-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+        
+        .modal-meta i { color: var(--uon-sky); margin-right: 5px; }
+
+        .modal-body-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-label {
+            font-weight: 700;
+            color: var(--uon-sky);
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-text {
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        /* --- 8. RESPONSIVE DESIGN --- */
+        @media screen and (max-width: 768px) {
+            .timeline-section::after {
+                left: 31px; /* Move spine to left */
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 15px;
+            }
+            
+            .timeline-item.left, .timeline-item.right {
+                left: 0;
+                text-align: left;
+            }
+            
+            /* Connectors alignment */
+            .timeline-item::after {
+                left: 21px;
+            }
+
+            .timeline-item.right::after {
+                left: 21px;
+            }
+
+            h1 { font-size: 1.6rem; }
+            h2 { font-size: 1.1rem; }
+            
+            .logo-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: OVERVIEW (HEADER) -->
+    <header>
+        <div class="container">
+            <div class="logo-area">
+                <div class="logo-text">
+                    Nottingham University <br>Business School<br>
+                </div>
+            </div>
+
+            <h1>BUSI4652 - Generating Customer Insights and Analytics</h1>
+            <h2>Digital Learning Experience Design for Customer Segmentation with Clustering Analysis</h2>
+            
+            <p class="intro-text">
+                This document outlines a 3.5-hour digital learning experience for the module BUSI4652, 
+                'Generating Customer Insights and Analytics'. The experience is designed to develop students' 
+                conceptual understanding and practical skills in clustering analysis for marketing applications.
+            </p>
+
+            <div class="pedagogy-section">
+                <span class="pedagogy-title">Foundational Pedagogical Principles:</span>
+                <div class="pedagogy-item">
+                    <strong>Constructive Alignment (Biggs, 1996):</strong> As established in my previous coursework submitted for the module 'Curriculum Design and Assessment in Higher Education', the principle of constructive alignment is the core foundation for this learning design. The Learning Outcomes (LOs) for this session are explicitly aligned with the Teaching and Learning Activities (TLAs) and the formative assessment tasks embedded within the session. Every activity is purposefully designed to help students achieve the stated outcomes.
+                </div>
+                <div class="pedagogy-item">
+                    <strong>Conversational Framework (Laurillard, 2012):</strong> To structure the learning process, I have used Laurillard's Conversational Framework. My design ensures students cycle through all six of Laurillard's learning types: Acquisition, Enquiry, Practice, Discussion, Collaboration, and Production, creating a multi-faceted learning journey.
+                </div>
+            </div>
+
+            <div class="lo-box">
+                <h3>Learning Outcomes:</h3>
+                <ul>
+                    <li><strong>LO1:</strong> Explain the conceptual basis of clustering and differentiate between major clustering techniques.</li>
+                    <li><strong>LO2:</strong> Apply K-Means clustering analysis to datasets using statistical software.</li>
+                    <li><strong>LO3:</strong> Interpret analysis outputs to create data-driven customer personas and inform decision-making.</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 2: INTERACTIVE VERTICAL TIMELINE -->
+    <div class="timeline-section">
+        
+        <!-- PHASE 1 HEADING -->
+        <div class="phase-header">Phase 1: Asynchronous Preparation (30 mins total)</div>
+
+        <!-- Activity 1 (Left) -->
+        <div class="timeline-item left">
+            <div class="card" onclick="openModal(1)" tabindex="0" role="button" aria-label="Activity 1: Engage with Xerte">
+                <div class="card-top">
+                    <span class="activity-title">1. Engage with Xerte</span>
+                    <span class="duration-badge">20 mins</span>
+                </div>
+                <div class="card-middle">
+                    <div class="actor-icon"><i class="fas fa-user"></i></div>
+                    <div class="actor-text">Performed By: Student (Individual)</div>
+                </div>
+                <div class="card-bottom">
+                    <div class="tools-row">
+                        <i class="fas fa-graduation-cap" title="Moodle"></i>
+                        <i class="fas fa-laptop-code" title="Xerte"></i>
+                        <i class="fas fa-video" title="YouTube"></i>
+                    </div>
+                    <div class="tags-row">
+                        <span class="tag acquisition">Acquisition</span>
+                        <span class="tag practice">Practice</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 2 (Right) -->
+        <div class="timeline-item right">
+            <div class="card" onclick="openModal(2)" tabindex="0" role="button" aria-label="Activity 2: Initial Peer Enquiry">
+                <div class="card-top">
+                    <span class="activity-title">2. Initial Peer Enquiry</span>
+                    <span class="duration-badge">10 mins</span>
+                </div>
+                <div class="card-middle">
+                    <div class="actor-icon"><i class="fas fa-user"></i></div>
+                    <div class="actor-text">Performed By: Student (Individual)</div>
+                </div>
+                <div class="card-bottom">
+                    <div class="tools-row">
+                        <i class="fas fa-comments" title="Moodle Forum"></i>
+                    </div>
+                    <div class="tags-row">
+                        <span class="tag enquiry">Enquiry</span>
+                        <span class="tag discussion">Discussion</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 2 HEADING -->
+        <div class="phase-header">Phase 2: Synchronous Live Session (180 mins total)</div>
+
+        <!-- Activity 3 (Left) -->
+        <div class="timeline-item left">
+            <div class="card" onclick="openModal(3)" tabindex="0" role="button" aria-label="Activity 3: Interactive Lecture">
+                <div class="card-top">
+                    <span class="activity-title">3. Interactive Lecture</span>
+                    <span class="duration-badge">40 mins</span>
+                </div>
+                <div class="card-middle">
+                    <div class="actor-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div class="actor-text">Performed By: Instructor</div>
+                </div>
+                <div class="card-bottom">
+                    <div class="tools-row">
+                        <i class="fas fa-file-powerpoint" title="PowerPoint"></i>
+                        <i class="fas fa-poll" title="EchoPoll"></i>
+                    </div>
+                    <div class="tags-row">
+                        <span class="tag acquisition">Acquisition</span>
+                        <span class="tag practice">Practice</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 4 (Right) -->
+        <div class="timeline-item right">
+            <div class="card" onclick="openModal(4)" tabindex="0" role="button" aria-label="Activity 4: Live Web App Demo">
+                <div class="card-top">
+                    <span class="activity-title">4. Live Web App Demo</span>
+                    <span class="duration-badge">20 mins</span>
+                </div>
+                <div class="card-middle">
+                    <div class="actor-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div class="actor-text">Performed By: Instructor</div>
+                </div>
+                <div class="card-bottom">
+                    <div class="tools-row">
+                        <i class="fas fa-code" title="Custom App"></i>
+                        <i class="fas fa-projector" title="Projector"></i>
+                    </div>
+                    <div class="tags-row">
+                        <span class="tag acquisition">Acquisition</span>
+                        <span class="tag enquiry">Enquiry</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="subphase-header">60 mins break between Lecture and Lab Practice</div>
+        
+        <!-- Activity 5 (Left) -->
+        <div class="timeline-item left">
+            <div class="card" onclick="openModal(5)" tabindex="0" role="button" aria-label="Activity 5: Guided Lab Practice">
+                <div class="card-top">
+                    <span class="activity-title">5. Guided Lab Practice</span>
+                    <span class="duration-badge">60 mins</span>
+                </div>
+                <div class="card-middle">
+                    <div class="actor-icon"><i class="fas fa-user-friends"></i></div>
+                    <div class="actor-text">Performed By: Students (Pairs)</div>
+                </div>
+                <div class="card-bottom">
+                    <div class="tools-row">
+                        <i class="fas fa-table" title="SPSS"></i>
+                        <i class="fas fa-file-pdf" title="PDF Worksheet"></i>
+                    </div>
+                    <div class="tags-row">
+                        <span class="tag practice">Practice</span>
+                        <span class="tag collaboration">Collaboration</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 6 (Right) -->
+        <div class="timeline-item right">
+            <div class="card" onclick="openModal(6)" tabindex="0" role="button" aria-label="Activity 6: Persona Production">
+                <div class="card-top">
+                    <span class="activity-title">6. Persona Production</span>
+                    <span class="duration-badge">40 mins</span>
+                </div>
+                <div class="card-middle">
+                    <div class="actor-icon"><i class="fas fa-user-friends"></i></div>
+                    <div class="actor-text">Performed By: Students (Pairs)</div>
+                </div>
+                <div class="card-bottom">
+                    <div class="tools-row">
+                        <i class="fas fa-file-powerpoint" title="PPT/Google Slides"></i>
+                        <i class="fas fa-table" title="SPSS Output"></i>
+                    </div>
+                    <div class="tags-row">
+                        <span class="tag production">Production</span>
+                        <span class="tag collaboration">Collaboration</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 7 (Left) -->
+        <div class="timeline-item left">
+            <div class="card" onclick="openModal(7)" tabindex="0" role="button" aria-label="Activity 7: Peer Review & Synthesis">
+                <div class="card-top">
+                    <span class="activity-title">7. Peer Review & Synthesis</span>
+                    <span class="duration-badge">20 mins</span>
+                </div>
+                <div class="card-middle">
+                    <div class="actor-icon"><i class="fas fa-users"></i></div>
+                    <div class="actor-text">Performed By: Groups (4) & Instructor</div>
+                </div>
+                <div class="card-bottom">
+                    <div class="tools-row">
+                        <i class="fas fa-projector" title="Slides/Projector"></i>
+                    </div>
+                    <div class="tags-row">
+                        <span class="tag discussion">Discussion</span>
+                        <span class="tag acquisition">Acquisition</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECTION 4: ANALYTICS (PIE CHART) -->
+    <section class="analytics-section">
+        <div class="container">
+            <h2>Distribution of Laurillard's Learning Types</h2>
+            <div class="chart-container">
+                <canvas id="learningTypeChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: REFERENCE LIST -->
+    <footer class="references-section">
+        <div class="container">
+            <h3>References</h3>
+            <p>Biggs, J. (1996). Enhancing teaching through constructive alignment. <em>Higher Education</em>, 32(3), 347-364.</p>
+            <br>
+            <p>Laurillard, D. (2012). <em>Teaching as a Design Science: Building Pedagogical Patterns for Learning and Technology</em>. New York: Routledge.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE MODAL (HIDDEN) -->
+    <div class="modal-overlay" id="activityModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()" aria-label="Close Modal">&times;</button>
+            <div id="modalBody">
+                <!-- Javascript will inject content here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA OBJECT (Single Source of Truth) ---
+        const activities = {
+            1: {
+                title: "1. Engage with Xerte",
+                duration: "20 mins",
+                modality: "Async Online",
+                actor: "Student (Individual)",
+                desc: "Students access a Xerte on Moodle that includes YouTube videos on clustering techniques, an interactive hotspot image, and a three-question self-assessment quiz.",
+                tools: "Moodle, Xerte, YouTube files, custom interactive image.",
+                tags: "Acquisition, Practice",
+                los: "LO1"
+            },
+            2: {
+                title: "2. Initial Peer Enquiry",
+                duration: "10 mins",
+                modality: "Async Online",
+                actor: "Student (Individual)",
+                desc: "Students post one question or observation in the Moodle Discussion Forum. An exemplar post is provided.",
+                tools: "Moodle Discussion Forum.",
+                tags: "Enquiry, Discussion",
+                los: "LO1"
+            },
+            3: {
+                title: "3. Interactive Lecture",
+                duration: "40 mins",
+                modality: "Sync In-Person",
+                actor: "Instructor",
+                desc: "A lecture covering clustering theory, with live polling questions embedded using EchoPoll to stimulate discussion.",
+                tools: "PowerPoint with EchoPoll, projector, student devices.",
+                tags: "Acquisition, Practice",
+                los: "LO1"
+            },
+            4: {
+                title: "4. Live Web App Demo",
+                duration: "10 mins",
+                modality: "Sync In-Person",
+                actor: "Instructor",
+                desc: "A live demonstration of K-Means using a custom-built HTML web application to make the algorithms tangible.",
+                tools: "Custom HTML web app, projector, Moodle.",
+                tags: "Acquisition, Enquiry",
+                los: "LO1"
+            },
+            5: {
+                title: "5. Guided Lab Practice",
+                duration: "60 mins",
+                modality: "Sync In-Person",
+                actor: "Students (Pairs)",
+                desc: "In pairs on one computer, students follow a PDF worksheet to perform K-Means analysis on a dataset using SPSS.",
+                tools: "SPSS, computer, dataset file, PDF worksheet.",
+                tags: "Practice, Collaboration",
+                los: "LO2"
+            },
+            6: {
+                title: "6. Persona Production",
+                duration: "40 mins",
+                modality: "Sync In-Person",
+                actor: "Students (Pairs)",
+                desc: "Using SPSS analysis and outputs, pairs create a single PowerPoint slide presenting two customer personas. Presentation style it is up to them.",
+                tools: "PowerPoint/Google Slides, SPSS Statistics.",
+                tags: "Production, Collaboration",
+                los: "LO3"
+            },
+            7: {
+                title: "7. Peer Review & Synthesis",
+                duration: "20 mins",
+                modality: "Sync In-Person",
+                actor: "Groups of 4 & Instructor",
+                desc: "Pairs form groups for peer feedback on their persona slides, followed by a whole-class synthesis led by the instructor.",
+                tools: "Student-produced slides, projector.",
+                tags: "Discussion, Acquisition",
+                los: "LO3"
+            }
+        };
+
+        // --- MODAL FUNCTIONS ---
+        const modalOverlay = document.getElementById('activityModal');
+        const modalBody = document.getElementById('modalBody');
+
+        function openModal(id) {
+            const data = activities[id];
+            
+            // Build Modal Content
+            const htmlContent = `
+                <div class="modal-header">
+                    <h2>${data.title}</h2>
+                    <div class="modal-meta">
+                        <span><i class="far fa-clock"></i> ${data.duration}</span>
+                        <span><i class="fas fa-wifi"></i> ${data.modality}</span>
+                    </div>
+                </div>
+                
+                <div class="modal-body-section">
+                    <span class="modal-label">Performed By</span>
+                    <p class="modal-text">${data.actor}</p>
+                </div>
+
+                <div class="modal-body-section">
+                    <span class="modal-label">Detailed Description</span>
+                    <p class="modal-text">${data.desc}</p>
+                </div>
+
+                <div class="modal-body-section">
+                    <span class="modal-label">Digital Tools & Resources</span>
+                    <p class="modal-text">${data.tools}</p>
+                </div>
+
+                <div class="modal-body-section">
+                    <span class="modal-label">Laurillard's Learning Type(s)</span>
+                    <p class="modal-text">${data.tags}</p>
+                </div>
+
+                <div class="modal-body-section">
+                    <span class="modal-label">Alignment with LOs</span>
+                    <p class="modal-text"><strong>${data.los}</strong></p>
+                </div>
+            `;
+
+            modalBody.innerHTML = htmlContent;
+            modalOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
+        }
+
+        function closeModal() {
+            modalOverlay.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Close when clicking background
+        window.onclick = function(event) {
+            if (event.target == modalOverlay) {
+                closeModal();
+            }
+        }
+        
+        // Accessibility: Close on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && modalOverlay.style.display === 'flex') {
+                closeModal();
+            }
+        });
+
+        // --- CHART.JS INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('learningTypeChart').getContext('2d');
+            
+            // Data derived from request
+            const data = {
+                labels: ['Acquisition', 'Practice', 'Enquiry', 'Discussion', 'Collaboration', 'Production'],
+                datasets: [{
+                    label: 'Learning Types',
+                    data: [4, 3, 2, 2, 2, 1], // Counts from prompt
+                    backgroundColor: [
+                        '#2c3e50', // Acquisition (Dark Blue)
+                        '#27ae60', // Practice (Green)
+                        '#8e44ad', // Enquiry (Purple)
+                        '#d35400', // Discussion (Orange)
+                        '#16a085', // Collaboration (Teal)
+                        '#c0392b'  // Production (Red)
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 4
+                }]
+            };
+
+            const config = {
+                type: 'pie',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Roboto', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.raw;
+                                    let total = context.chart._metasets[context.datasetIndex].total;
+                                    let percentage = Math.round((value / total) * 100) + '%';
+                                    return label + value + ' (' + percentage + ')';
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            new Chart(ctx, config);
+        });
+    </script>
+</body>
+</html>
